@@ -55,5 +55,10 @@ clang++ -fsanitize=address,fuzzer test_fuzzer.cc
      * ...
 ## 参考链接
 
+### libfuzzer
 * https://llvm.org/docs/LibFuzzer.html
 * https://github.com/google/fuzzing/blob/master/tutorial/libFuzzerTutorial.md
+
+### fuzzing-learn
+* https://www.fuzzingbook.org/
+* 《The Art, Science, and Engineering of Fuzzing: A Survey》
