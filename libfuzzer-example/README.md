@@ -61,4 +61,4 @@ clang++ -fsanitize=address,fuzzer test_fuzzer.cc
 
 ### fuzzing-learn
 * https://www.fuzzingbook.org/
-* 《The Art, Science, and Engineering of Fuzzing: A Survey》
+* https://ieeexplore.ieee.org/document/8863940
