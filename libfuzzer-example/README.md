@@ -3,7 +3,7 @@
 
 ```shell
 # 版本不低于6.0
-sudo apt install clang # 编译C/C++代码需要
+sudo dnf install clang # 编译C/C++代码需要
 sudo dnf install llvm # 获取覆盖率的时候需要
 
 clang -v
@@ -49,8 +49,10 @@ clang++ -fsanitize=address,fuzzer test_fuzzer.cc
    * 默认是单线程进行测试(除非被测试的库启动自己的线程)。`-jobs`参数可以控制，测试使用的(处理器)数量。(-job=30。但是当前cpu只有12个，默认只能分配一半(-work=min(jobs, NumberOfCpuCores()/2))，即6个cpu。所以同时运行的这6个测试进程，平均每个需要发现5个bug(进程因为bug停止后，会重新再创建一个)，程序才会停止。这也是为什么，不使用job参数的时候，遇到一个bug程序即停止) （这里的并行测试会共享语料库。但应该共享不了路径吧。）
    * -runs 限制尝试次数。
    * 可以拒绝不需要的输入。比如，只希望解析的输入进入语料库。
-4. 暂时忽略部分。
-     * 代码覆盖率。使用clang coverage。(先测试，然后拿个原来的种子和生成的种子重新跑一遍，得到覆盖率) （生成的覆盖率文件llvm-cov show，远程连接看不到。后面尝试尝试转成图片格式查看吧。）
+4. 测试结果。
+   * * 代码覆盖率。使用clang coverage。(先测试，然后拿个原来的种子和生成的种子重新跑一遍，得到覆盖率) （生成的覆盖率文件llvm-cov show，生成html格式查看。）
+   ...
+5. 暂时忽略部分。
      * 与其他模糊测试器的兼容。
      * ...
 ## 参考链接
@@ -62,3 +64,4 @@ clang++ -fsanitize=address,fuzzer test_fuzzer.cc
 ### fuzzing-learn
 * https://www.fuzzingbook.org/
 * https://ieeexplore.ieee.org/document/8863940
+* https://github.com/wcventure/FuzzingPaper
