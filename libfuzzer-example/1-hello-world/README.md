@@ -13,5 +13,8 @@ clang++ -fsanitize=address,fuzzer -fprofile-instr-generate -fcoverage-mapping te
 llvm-profdata merge -sparse *.profraw -o default.profdata
 
 # 远程连接的机器看不到图片
-llvm-cov show a.out -instr-profile=default.profdata -name=FuzzMe
+# llvm-cov show a.out -instr-profile=default.profdata -name=FuzzMe
+
+# 覆盖率html显示
+llvm-cov show -format=html a.out -instr-profile=default.profdata -o coverage_report
 ```
