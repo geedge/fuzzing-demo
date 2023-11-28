@@ -5,4 +5,8 @@ tips: woff有特定的格式。程序从字符串模糊生成，效率太低，�
 ../../../../fuzzer-test-suite/woff2-2016-05-06/build.sh
 
 ./woff2-2016-05-06-fsanitize_fuzzer
+
+mkdir MY_CORPUS
+./woff2-2016-05-06-fsanitize_fuzzer MY_CORPUS/ seeds/
+# ==1396==ERROR: AddressSanitizer: heap-buffer-overflow on address...
 ```
