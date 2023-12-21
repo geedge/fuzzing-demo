@@ -59,7 +59,7 @@ set_target_properties(libdpdk PROPERTIES
     IMPORTED_LOCATION ${INSTALL_DIR}/lib64/librte_eal.a
     INTERFACE_LINK_DIRECTORIES ${INSTALL_DIR}/lib64
     INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
-    IMPORTED_LINK_INTERFACE_LIBRARIES "rte_ethdev;rte_telemetry"
+    IMPORTED_LINK_INTERFACE_LIBRARIES "numa;rte_ethdev.a;rte_telemetry.a;rte_kvargs.a"
 )
 
 get_target_property(library_location libdpdk IMPORTED_LINK_INTERFACE_LIBRARIES)
