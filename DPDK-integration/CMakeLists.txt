@@ -37,6 +37,7 @@ endif()
 
 set(DPDK_MESON_DISABLED_DRIVERS "common/cpt,common/dpaax,common/octeontx,common/octeontx2,common/sfc_efx,common/qat,bus/dpaa,bus/fslmc,bus/ifpga,bus/vmbus,mempool/bucket,mempool/dpaa,mempool/dpaa2,mempool/octeontx,mempool/octeontx2,mempool/stack,raw/ifpga,raw/ioat,raw/ntb,raw/octeontx2_dma,raw/octeontx2_ep,raw/skeleton,compress/zlib,regex/octeontx2,vdpa/ifc,event/skeleton,event/dlb,event/dlb2,event/opdl,sevent/keleton,event/sw,event/dsw,baseband/null,baseband/turbo_sw,baseband/fpga_lte_fec,baseband/fpga_5gnr_fec,baseband/acc100,crypto/bcmfs,crypto/ccp,crypto/nitrox,crypto/null,crypto/openssl,crypto/scheduler,crypto/virtio")
 
+# Although default_library=static has been set, both dynamic and static libraries are compiled. a little strange
 add_definitions(-DRTE_MAX_MEMZONE=125600)
 add_definitions(-DRTE_LIBRTE_GRAPH_STATS=10)
 ExternalProject_Add(dpdk PREFIX dpdk
