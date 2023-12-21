@@ -57,10 +57,14 @@ add_library(libdpdk STATIC IMPORTED GLOBAL)
 add_dependencies(libdpdk dpdk)
 set_target_properties(libdpdk PROPERTIES
     IMPORTED_LOCATION ${INSTALL_DIR}/lib64/librte_eal.a
-    IMPORTED_INTERFACE_LINK_LIBRARIES rte_ethdev
     INTERFACE_LINK_DIRECTORIES ${INSTALL_DIR}/lib64
     INTERFACE_INCLUDE_DIRECTORIES ${INSTALL_DIR}/include
+    IMPORTED_LINK_INTERFACE_LIBRARIES "rte_ethdev;rte_telemetry"
 )
+
+get_target_property(library_location libdpdk IMPORTED_LINK_INTERFACE_LIBRARIES)
+message(STATUS "Library Location: ${library_location}")
+
 
 add_executable(${PROJECT_NAME} main.c)
 target_link_libraries(${PROJECT_NAME} PRIVATE libdpdk)
