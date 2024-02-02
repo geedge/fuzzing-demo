@@ -19,8 +19,8 @@ bool isBPFRuleMatching(const char *bpfRule, const unsigned char *packet,
 
   // 执行匹配
   struct pcap_pkthdr header;
-  header.caplen = packetLength;
-  header.len = packetLength;
+  header.caplen = 12;
+  header.len = 12;
 
   if (pcap_offline_filter(&fp, &header, packet) != 0) {
     pcap_freecode(&fp);
@@ -54,18 +54,25 @@ int main() {
   };
 
   // 示例 BPF 规则
-  const char *bpfRule = "src host 192.168.11.169";
+  // const char *bpfRule = "src host 192.168.11.169";
+  // const char *failBpfRule = "src host 192.168.11.111";
 
-  const char *failBpfRule = "src host 192.168.11.111";
+  unsigned char pkt_02[] = {
+      0x2E, 0x48, 0xF7, 0x09, 0x02, 0xC2, 0x00, 0x00, 0x00, 0x00, 0x00,
+      0x00, 0x08, 0x00, 0x45, 0x00, 0x00, 0x1C, 0x00, 0x01, 0x00, 0x40,
+      0x01, 0x88, 0x20, 0xAC, 0x13, 0xC7, 0xAB, 0x7F, 0x00, 0x00, 0x01,
+      0x08, 0x00, 0xF7, 0xFF, 0x00, 0x00, 0x00, 0x00};
+  const char *bpfRule = "ether host 2e:48:f7:09:02:c2";
+  const char *failBpfRule = "ether host 2e:48:f7:09:02:c3";
 
   // 判断规则是否匹配数据包
-  if (isBPFRuleMatching(bpfRule, pkt_031, sizeof(pkt_031))) {
+  if (isBPFRuleMatching(bpfRule, pkt_02, sizeof(pkt_02))) {
     printf("YES\n");
   } else {
     printf("NO\n");
   }
 
-  if (isBPFRuleMatching(failBpfRule, pkt_031, sizeof(pkt_031))) {
+  if (isBPFRuleMatching(failBpfRule, pkt_02, sizeof(pkt_02))) {
     printf("NO\n");
   }
 

@@ -1,20 +1,20 @@
-from scapy.all import Ether, IP, ICMP, sendp
+from scapy.all import Ether, IP, TCP, srp, Raw, ICMP
 
-def send_icmp_request(target_mac):
-    # 创建 Ethernet 数据包，设置目标 MAC 地址
-    ethernet_packet = Ether(dst=target_mac)
+def send_icmp_request():
+    ethernet_packet = Ether(src="00:15:5d:b8:10:a6", dst="de:a2:35:57:4f:65")
 
-    # 创建 ICMP Echo 请求数据包
-    icmp_packet = IP(dst="192.168.1.1") / ICMP()
+    http_get_request = b"GET / HTTP/1.1\r\nHost: www.baidu.com\r\n\r\n"
 
-    # 合并 Ethernet 数据包和 ICMP 数据包
-    final_packet = ethernet_packet / icmp_packet
+    # final_packet = ethernet_packet / IP(src="172.19.199.171", dst="220.181.38.149") / TCP(dport=80) / Raw(load=http_get_request)
 
-    # 发送数据包
-    sendp(final_packet, iface="eth0")  # 请替换为你的网络接口
+    final_packet = ethernet_packet / IP(src="172.19.199.171", dst="220.181.38.149") / ICMP()
 
-# 替换为目标设备的实际 MAC 地址
-target_mac_address = "00:11:22:33:44:55"
+    response, _ = srp(final_packet, iface="vwire_1") 
 
-# 发送 ICMP Echo 请求
-send_icmp_request(target_mac_address)
+    for sent_packet, received_packet in response:
+        print("Sent Packet:")
+        print(sent_packet.show())
+        print("\nReceived Packet:")
+        print(received_packet.show())
+
+send_icmp_request()
