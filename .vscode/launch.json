@@ -2,14 +2,33 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "C/C++ Runner: Debug Session",
+      "name": "collectionc_test",
       "type": "cppdbg",
       "request": "launch",
       "args": [],
       "stopAtEntry": true,
       "externalConsole": false,
-      "cwd": "/home/da1234cao/work/fuzzing-demo/dpdk-bpf/build",
-      "program": "/home/da1234cao/work/fuzzing-demo/dpdk-bpf/build/dpdk-bpf",
+      "cwd": "/root/work/fuzzing-demo/core_ring/",
+      "program": "/root/work/fuzzing-demo/core_ring/main",
+      "MIMode": "gdb",
+      "miDebuggerPath": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "cppdbg",
+      "request": "launch",
+      "args": [],
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "cwd": "/root/work/fuzzing-demo/tmp",
+      "program": "/root/work/fuzzing-demo/tmp/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

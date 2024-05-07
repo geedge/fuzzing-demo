@@ -4,3 +4,4 @@ fuzzer-test-suite
 DPDK-integration/dpdk
 
 **/build
+.vscode

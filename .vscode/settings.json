@@ -61,6 +61,10 @@
     "rte_common.h": "c",
     "bpf_def.h": "c",
     "rte_bpf.h": "c",
-    "rte_memory.h": "c"
+    "rte_memory.h": "c",
+    "string.h": "c",
+    "stdio.h": "c",
+    "stdint.h": "c",
+    "cstdint": "c"
   }
 }
