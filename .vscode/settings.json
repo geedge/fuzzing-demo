@@ -65,6 +65,8 @@
     "string.h": "c",
     "stdio.h": "c",
     "stdint.h": "c",
-    "cstdint": "c"
+    "cstdint": "c",
+    "inet.h": "c",
+    "ip.h": "c"
   }
 }
