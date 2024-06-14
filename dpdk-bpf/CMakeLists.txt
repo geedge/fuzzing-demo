@@ -22,7 +22,7 @@ add_library(libdpdk STATIC IMPORTED GLOBAL)
 add_dependencies(libdpdk compress_dpdk_libraries)
 set_target_properties(libdpdk PROPERTIES
     IMPORTED_LOCATION ${M_LIB}
-    INTERFACE_LINK_LIBRARIES "-Wl,--whole-archive;${LIBDPDK_LIBDIR}/libdpdks.a;-Wl,--no-whole-archive;rt;m;numa;fdt;atomic;mlx5;ibverbs;crypto;z;jansson;mlx4;pcap;isal;elf;pthread;dl;bsd"
+    INTERFACE_LINK_LIBRARIES "-Wl,--whole-archive;${LIBDPDK_LIBDIR}/libdpdks.a;-Wl,--no-whole-archive;rt;m;numa;fdt;atomic;mlx5;ibverbs;crypto;z;jansson;pcap;elf;pthread;dl"
 )
 
 add_executable(${PROJECT_NAME} main.c)

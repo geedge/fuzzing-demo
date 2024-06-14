@@ -63,7 +63,8 @@ int main(int argc, char *argv[]) {
 
   struct rte_bpf_prm *rbp = rte_bpf_convert(&bp);
   struct rte_bpf *rb = rte_bpf_load(rbp);
-  // The return code from bpf capture filter is non-zero if matched
+  /* The return code from bpf capture filter is non-zero if matched */
   uint64_t rc = rte_bpf_exec(rb, pkt_buf);
   printf("rc: %" PRIu64 "\n", rc);
+  printf("matched: %d\n", (rc != 0));
 }
