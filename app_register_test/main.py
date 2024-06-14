@@ -17,12 +17,12 @@ commands = [
 
 # 线程函数，随机选择并执行一个命令
 def execute_command(stop_event):
-    while stop_event.is_set():
+    while not stop_event.is_set():
         command = random.choice(commands)
         thread = threading.Thread(target=os.system, args=(command,))
         thread.daemon = True  # 使线程在主线程退出时也退出
         thread.start()
-        time.sleep(2)  # 定时执行间隔，可以根据需要调整
+        time.sleep(1)  # 定时执行间隔，可以根据需要调整
 
 # 进程函数，定期检查并杀死随机一个mrtest-l2fwd-nf进程
 def kill_process(stop_event):
@@ -35,7 +35,7 @@ def kill_process(stop_event):
             print(f"Killed process with PID: {pid_to_kill}")
         elif stop_event.is_set():
             break
-        time.sleep(1)  # 定时检查间隔，可以根据需要调整
+        time.sleep(5)  # 定时检查间隔，可以根据需要调整
 
 def signal_handler(signum, frame, stop_event, processes):
     print("Caught signal, terminating processes...")
@@ -54,10 +54,10 @@ if __name__ == "__main__":
     command_process.start()
 
     # 创建并启动杀死进程的进程
-    # kill_process_process = multiprocessing.Process(target=kill_process,args=(stop_event,))
-    # kill_process_process.start()
+    kill_process_process = multiprocessing.Process(target=kill_process,args=(stop_event,))
+    kill_process_process.start()
 
-    processes = [command_process]
+    processes = [command_process, kill_process_process]
 
     # 设置信号处理程序来捕获 SIGINT (Ctrl-C)
     signal.signal(signal.SIGINT, lambda signum, frame: signal_handler(signum, frame, stop_event, processes))
