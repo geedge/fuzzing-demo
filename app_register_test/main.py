@@ -8,7 +8,9 @@ import sys
 import glob
 from datetime import datetime
 
+# working_directory = "/root/work/dp_telemetry_app/build/support/marsio/src/marsio/build_v474/examples"
 working_directory = "/root/work/dp_telemetry_app/build/support/marsio/src/marsio/build_v474/examples"
+
 
 # 命令列表
 commands = [
@@ -28,19 +30,19 @@ def execute_command(stop_event, process_id):
         thread.start()
         count += 1
         print(f"Process {process_id} executed command count: {count}")
-        time.sleep(random.uniform(2, 4))
+        time.sleep(random.uniform(5, 8))
 
 # 进程函数，定期检查并杀死随机一个mrtest-l2fwd-nf进程
 def kill_process(stop_event):
     while True:
-        pid_output = os.popen("pidof mrtest-l2fwd-nf").read().strip()
-        if pid_output:
-            pids = pid_output.split()
-            pid_to_kill = random.choice(pids)
-            os.system(f"kill {pid_to_kill}")
-            print(f"Killed process with PID: {pid_to_kill}")
-        elif stop_event.is_set():
-            break
+        # pid_output = os.popen("pidof mrtest-l2fwd-nf").read().strip()
+        # if pid_output:
+        #     pids = pid_output.split()
+        #     pid_to_kill = random.choice(pids)
+        #     os.system(f"kill {pid_to_kill}")
+        #     print(f"Killed process with PID: {pid_to_kill}")
+        # elif stop_event.is_set():
+        #     break
         time.sleep(random.uniform(2, 4))
 
 # 打印 mrzcpd 进程使用的文件描述符个数
