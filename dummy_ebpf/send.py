@@ -11,5 +11,15 @@ def arp_test():
     # 发送 ARP 请求到 dummy0 接口
     sendp(arp_request, iface="dummy0")
 
+
+def icmp_test():
+    arp_request = Ether(dst="12:34:56:78:9a:bc") / IP(dst="8.8.8.8")/ICMP()
+
+    extra_data = 'b'
+    arp_request = arp_request / Raw(load=extra_data)
+
+    sendp(arp_request, iface="dummy0")
+
 if __name__ == "__main__":
     arp_test()
+    icmp_test()

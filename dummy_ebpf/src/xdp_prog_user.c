@@ -60,3 +60,35 @@ struct xdp_program *load_bpf_and_xdp_attach() {
 
   return prog;
 }
+
+void redirect_rule_set(struct xdp_program *prog) {
+  int ret = 0;
+  const struct config *conf = global_config_get();
+  const struct device *device_inst = device_inst_get();
+  struct bpf_object *obj = xdp_program__bpf_obj(prog);
+
+  struct bpf_map *redirect_map = bpf_object__find_map_by_name(obj, "dummy_redirect_map");
+  if (redirect_map == NULL) {
+    perror("bpf_object__find_map_by_name look for redirect_map failed");
+    goto failure;
+  }
+  int redirect_map_fd = bpf_map__fd(redirect_map);
+
+  for (unsigned int i = 0; i < device_inst->nr_device; i++) {
+    const struct device_desc *device_ref = &device_inst->device_descs[i];
+    const int device_index = device_inst->device_index[i];
+
+    if (device_ref->key > 0) {
+      ret = bpf_map_update_elem(redirect_map_fd, &device_ref->key, &device_index, 0);
+      if (ret != 0) {
+        printf("fail to insert redirect rule");
+        goto failure;
+      }
+    }
+  }
+
+  return;
+
+failure:
+  exit(EXIT_FAILURE);
+}

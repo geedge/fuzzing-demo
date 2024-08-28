@@ -1,15 +1,17 @@
-#include "device.h"
-#include "config.h"
-#include "tap.h"
-
 #include <assert.h>
-#include <linux/if.h>
+#include <errno.h>
 #include <linux/rtnetlink.h>
 #include <netlink/errno.h>
 #include <netlink/msg.h>
 #include <netlink/netlink.h>
 #include <netlink/route/link.h>
 #include <netlink/socket.h>
+#include <sys/epoll.h>
+#include <unistd.h>
+
+#include "config.h"
+#include "device.h"
+#include "tap.h"
 
 struct device device_inst;
 
@@ -127,6 +129,8 @@ void device_index_get() {
     device_inst.device_index[i] = ifindex;
   }
 
+  return;
+
 failure:
   exit(EXIT_FAILURE);
 }
@@ -160,4 +164,15 @@ int xdp_device_index_get() {
   }
 
   return 0;
+}
+
+struct device_desc *device_desc_find_by_fd(int fd) {
+  for (int i = 0; i < device_inst.nr_device; i++) {
+    int device_fd = device_inst.device_fds[i];
+    if (device_fd == fd) {
+      return &device_inst.device_descs[i];
+    }
+  }
+
+  return NULL;
 }

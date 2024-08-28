@@ -23,7 +23,7 @@ add_custom_target(generate_bpf_obj ALL
     DEPENDS ${BPF_O_FILE}
 )
 
-set(SOURCE_FILES main.c config.c device.c tap.c xdp_prog_user.c)
+set(SOURCE_FILES main.c config.c device.c tap.c xdp_prog_user.c data.c)
 add_executable(main ${SOURCE_FILES})
 target_include_directories(main PRIVATE ${NL3_INCLUDE_DIRS})
 target_link_libraries(main PRIVATE ${NL3_LIBRARIES} ${LIBBPF_LIBRARIES} ${LIBXDP_LIBRARIES})
