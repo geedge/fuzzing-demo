@@ -72,10 +72,9 @@ int tc_redirect_map_func(struct __sk_buff *skb) {
   }
 
   // Redirect the packet to the endpoint referenced by map at index key.
-  ret = bpf_redirect(*ifindex, 0);
-  if (ret != XDP_REDIRECT) {
+  action = bpf_redirect(*ifindex, 0);
+  if (action != TC_ACT_REDIRECT) {
     bpf_printk("bpf_redirect_map failed. return code:%d", ret);
-    action = TC_ACT_REDIRECT;
   }
 
 out:

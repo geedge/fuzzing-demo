@@ -15,7 +15,7 @@ struct bpf_object *load_bpf_and_tc_attach() {
   const struct config *conf = global_config_get();
   int ifindex = xdp_device_index_get();
 
-  DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .attach_point = BPF_TC_INGRESS);
+  DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .attach_point = BPF_TC_EGRESS);
   DECLARE_LIBBPF_OPTS(bpf_tc_opts, attach);
 
   // Clear previous prog
@@ -94,7 +94,7 @@ void tc_dettach() {
   int err = 0;
   int ifindex = xdp_device_index_get();
 
-  DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .attach_point = BPF_TC_INGRESS);
+  DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .attach_point = BPF_TC_EGRESS);
   DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts);
 
   hook.ifindex = ifindex;
