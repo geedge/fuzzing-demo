@@ -9,17 +9,23 @@
 #include "device.h"
 #include "tc_prog_user.h"
 
+static bool created_hook = true;
+struct bpf_tc_hook hook = {};
+struct bpf_tc_opts tc_opt = {};
+
+static int libbpf_print_fn(enum libbpf_print_level level, const char *format, va_list args) {
+  return vfprintf(stderr, format, args);
+}
+
 struct bpf_object *load_bpf_and_tc_attach() {
   int err;
 
   const struct config *conf = global_config_get();
   int ifindex = xdp_device_index_get();
 
-  DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .attach_point = BPF_TC_EGRESS);
-  DECLARE_LIBBPF_OPTS(bpf_tc_opts, attach);
-
-  // Clear previous prog
-  tc_dettach();
+  hook.sz = sizeof(struct bpf_tc_hook);
+  hook.attach_point = BPF_TC_EGRESS;
+  tc_opt.sz = sizeof(struct bpf_tc_opts);
 
   struct bpf_object *obj = bpf_object__open(conf->open_filename);
   if (obj == NULL) {
@@ -40,17 +46,24 @@ struct bpf_object *load_bpf_and_tc_attach() {
     exit(EXIT_FAILURE);
   }
 
-  attach.prog_fd = prog_fd;
+  //
+  // export LIBBPF_LOG_LEVEL=info
+  // bpf_program__set_log_level(prog, LIBBPF_DEBUG);
+  // libbpf_set_print(libbpf_print_fn);
+
+  tc_opt.prog_fd = prog_fd;
 
   hook.ifindex = ifindex;
 
   err = bpf_tc_hook_create(&hook);
-  if (err && err != -EEXIST) {
+  if (err && err == -EEXIST) {
+    created_hook = false;
+  } else if (err) {
     fprintf(stderr, "Couldn't create hook for ifindex %d\n", ifindex);
     exit(EXIT_FAILURE);
   }
 
-  err = bpf_tc_attach(&hook, &attach);
+  err = bpf_tc_attach(&hook, &tc_opt);
   if (err) {
     fprintf(stderr, "Couldn't attach program to ifindex %d\n", hook.ifindex);
     exit(EXIT_FAILURE);
@@ -90,27 +103,44 @@ failure:
   exit(EXIT_FAILURE);
 }
 
-void tc_dettach() {
+void tc_dettach(struct bpf_object *obj) {
+  // ref: bpf-examples/tc-policy/tc_txq_policy.c
+
   int err = 0;
   int ifindex = xdp_device_index_get();
+  const struct config *conf = global_config_get();
 
-  DECLARE_LIBBPF_OPTS(bpf_tc_hook, hook, .attach_point = BPF_TC_EGRESS);
-  DECLARE_LIBBPF_OPTS(bpf_tc_opts, opts);
+  // look at the source code of libbpf, it must be cleared to zero. otherwise it is considered
+  // an illegal parameter.
+  tc_opt.prog_fd = 0;
+  tc_opt.prog_id = 0;
+  tc_opt.flags = 0;
 
-  hook.ifindex = ifindex;
-  opts.prog_fd = -1;
-
-  err = bpf_tc_query(&hook, NULL);
+  // opt's hanlde is important
+  err = bpf_tc_query(&hook, &tc_opt);
   if (err == 0) {
-    printf("BPF program found with FD: %d\n", opts.prog_fd);
+    printf("BPF program found. its program id is: %d\n", tc_opt.prog_id);
   } else {
     printf("no BPF program need to dettach: %d\n", err);
     return;
   }
 
-  err = bpf_tc_hook_destroy(&hook);
-  if (err && err != -EEXIST) {
-    fprintf(stderr, "bpf_tc_hook_destroy failed %s\n", strerror(errno));
-    exit(EXIT_FAILURE);
+  tc_opt.prog_id = 0;
+  err = bpf_tc_detach(&hook, &tc_opt);
+  if (err == 0) {
+    printf("detach %s successfully.\n", conf->prog_name);
+  } else {
+    printf("detach %s failed:%s\n", conf->prog_name, strerror(errno));
   }
+
+  if (created_hook) {
+    // Even if this function executes successfully, qdisc clsact still exists
+    err = bpf_tc_hook_destroy(&hook);
+    if (err) {
+      fprintf(stderr, "bpf_tc_hook_destroy failed %s\n", strerror(errno));
+      exit(EXIT_FAILURE);
+    }
+  }
+
+  bpf_object__close(obj);
 }

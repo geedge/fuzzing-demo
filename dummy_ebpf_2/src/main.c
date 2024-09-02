@@ -55,5 +55,5 @@ int main(int argc, char *argv[]) {
   }
 
 cleanup:
-  tc_dettach();
+  tc_dettach(obj);
 }
